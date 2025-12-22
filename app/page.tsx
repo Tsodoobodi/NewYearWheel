@@ -52,10 +52,6 @@ export default function LotteryPage() {
   const handleSpinEnd = async (winnerIndex: number) => {
     const winner = participants[winnerIndex];
 
-    console.log('=== WINNER SELECTED ===');
-    console.log('Winner:', winner);
-    console.log('Index:', winnerIndex);
-
     setCurrentWinner({
       ft_code: winner.ft_code,
       full_name: winner.full_name,
@@ -66,31 +62,18 @@ export default function LotteryPage() {
     setTimeout(() => setShowCelebration(false), 4000);
 
     try {
-      console.log('=== SAVING WINNER TO DATABASE ===');
       const saveData = {
         participantId: winner.id,
         ftCode: winner.ft_code,
         fullName: winner.full_name,
         prizeName: 'Шагнал'
       };
-      console.log('Save data:', saveData);
 
       const result = await api.saveWinner(saveData);
-      console.log('✅ Save result:', result);
-
-      console.log('=== FETCHING WINNERS ===');
       const winnersData = await api.getWinners();
-      console.log('Winners data:', winnersData);
       setWinners(winnersData);
 
-      console.log('=== REMOVING FROM PARTICIPANTS ===');
-      setParticipants(prev => {
-        const newList = prev.filter((_, index) => index !== winnerIndex);
-        console.log('Participants before:', prev.length);
-        console.log('Participants after:', newList.length);
-        return newList;
-      });
-
+      setParticipants(prev => prev.filter((_, index) => index !== winnerIndex));
     } catch (error) {
       console.error('❌ ERROR:', error);
       setError('Хожигч хадгалахад алдаа гарлаа');
@@ -104,8 +87,8 @@ export default function LotteryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-red-700 flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#0C1B5C] to-[#0240E0] flex items-center justify-center relative overflow-hidden">
+        <div className="text-center relative z-10">
           <div className="inline-block animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-white mb-4"></div>
           <p className="text-white text-2xl font-semibold">Ачааллаж байна...</p>
         </div>
@@ -114,20 +97,45 @@ export default function LotteryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-red-700 py-8 px-4 relative overflow-hidden">
-      {/* ❄️ SNOWFLAKES - 50+ цасан ширхэг */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(60)].map((_, i) => (
+    <div className="min-h-screen bg-gradient-to-b from-[#0C1B5C] to-[#0240E0] py-8 px-4 relative overflow-hidden">
+      {/* ⭐ TWINKLING STARS - Гялтгах одууд */}
+      <div className="fixed inset-0 z-[1] pointer-events-none">
+        {[...Array(100)].map((_, i) => {
+          const size = Math.random() * 3 + 1; // 1-4px
+          const delay = Math.random() * 5;
+          const duration = Math.random() * 3 + 2; // 2-5s
+          
+          return (
+            <div
+              key={`star-${i}`}
+              className="absolute rounded-full bg-white star-twinkle"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${size}px`,
+                height: `${size}px`,
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`,
+                boxShadow: `0 0 ${size * 2}px ${size / 2}px rgba(255, 255, 255, 0.8)`,
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* ❄️ SNOWFLAKES */}
+      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+        {[...Array(50)].map((_, i) => (
           <div
-            key={`snow-${i}`}
-            className="absolute snowflake"
+            key={`snowflake-${i}`}
+            className="absolute text-white animate-snowfall"
             style={{
               left: `${Math.random() * 100}%`,
-              top: `-${Math.random() * 20}px`,
-              fontSize: `${Math.random() * 20 + 10}px`,
-              animationDelay: `${Math.random() * 10}s`,
+              top: `-20px`,
+              fontSize: `${Math.random() * 20 + 15}px`,
+              animationDelay: `${Math.random() * 5}s`,
               animationDuration: `${Math.random() * 10 + 10}s`,
-              opacity: Math.random() * 0.7 + 0.3
+              opacity: Math.random() * 0.5 + 0.3,
             }}
           >
             ❄️
@@ -135,75 +143,9 @@ export default function LotteryPage() {
         ))}
       </div>
 
-      {/* 🎄 CHRISTMAS TREES - 5 нисэж байгаа мод */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={`tree-${i}`}
-            className="absolute floating-tree"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: `${Math.random() * 30 + 40}px`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${Math.random() * 8 + 12}s`
-            }}
-          >
-            🎄
-          </div>
-        ))}
-      </div>
-
-      {/* ⭐ STARS - 15 одууд */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={`star-${i}`}
-            className="absolute floating-star"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: `${Math.random() * 20 + 15}px`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${Math.random() * 3 + 2}s`
-            }}
-          >
-            ⭐
-          </div>
-        ))}
-      </div>
-
-      {/* 🎁 GIFT BOXES - 8 бэлэг */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`gift-${i}`}
-            className="absolute floating-gift"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: `${Math.random() * 25 + 30}px`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${Math.random() * 6 + 8}s`
-            }}
-          >
-            🎁
-          </div>
-        ))}
-      </div>
-
-      {/* ✨ MAGICAL GLOWING LIGHTS */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-red-500/20 rounded-full blur-3xl animate-glow-pulse"></div>
-        <div className="absolute top-40 right-40 w-80 h-80 bg-green-500/20 rounded-full blur-3xl animate-glow-pulse-delay-1"></div>
-        <div className="absolute bottom-32 left-1/4 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-glow-pulse-delay-2"></div>
-        <div className="absolute bottom-20 right-1/3 w-64 h-64 bg-yellow-500/20 rounded-full blur-3xl animate-glow-pulse-delay-3"></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl animate-glow-pulse"></div>
-      </div>
-
       {/* 🎊 Celebration Effect */}
       {showCelebration && (
-        <div className="fixed inset-0 pointer-events-none z-40">
+        <div className="fixed inset-0 pointer-events-none z-[100]">
           {[...Array(100)].map((_, i) => (
             <div
               key={i}
@@ -228,19 +170,18 @@ export default function LotteryPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-block relative">
-            <h1 className="text-7xl font-black text-white mb-4 drop-shadow-2xl animate-bounce-slow christmas-title">
+            {/* ✨ GRADIENT ANIMATED TITLE ✨ */}
+            <h1 className="text-7xl font-black mb-4 drop-shadow-2xl christmas-gradient-title">
               🎄 ШИНЭ ЖИЛИЙН АЗТАН ШАЛГАРУУЛАХ 🎁
             </h1>
-            <div className="absolute -top-4 -right-4 text-5xl animate-spin-slow">⭐</div>
-            <div className="absolute -bottom-4 -left-4 text-5xl animate-spin-slow-reverse">❄️</div>
           </div>
           
           <div className="flex items-center justify-center gap-6 text-white/90 mt-6">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-3 border-2 border-red-400/30 shadow-glow-red animate-badge-float">
+            <div className="bg-white/15 backdrop-blur-xl rounded-2xl px-6 py-3 border-2 border-white/30 shadow-2xl animate-badge-float">
               <p className="text-sm font-medium mb-1">🎅 Нийт оролцогчид</p>
               <p className="text-3xl font-black text-yellow-300 animate-pulse">{participants.length}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-3 border-2 border-green-400/30 shadow-glow-green animate-badge-float-delay">
+            <div className="bg-white/15 backdrop-blur-xl rounded-2xl px-6 py-3 border-2 border-white/30 shadow-2xl animate-badge-float-delay">
               <p className="text-sm font-medium mb-1">🏆 Азтангууд</p>
               <p className="text-3xl font-black text-green-300 animate-pulse">{winners.length}</p>
             </div>
@@ -266,7 +207,7 @@ export default function LotteryPage() {
           {/* LEFT - WHEEL & PARTICIPANTS */}
           <div className="lg:col-span-2 space-y-6">
             {/* Wheel */}
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-4 border-white/20 shadow-glow-multi">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-4 border-white/30">
               <LotteryWheel
                 segments={segments}
                 onSpinEnd={handleSpinEnd}
@@ -275,7 +216,7 @@ export default function LotteryPage() {
             </div>
 
             {/* Participants */}
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 border-4 border-white/20">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 border-4 border-white/30">
               <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <svg className="w-7 h-7 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -288,7 +229,7 @@ export default function LotteryPage() {
 
           {/* RIGHT - WINNERS */}
           <div className="lg:col-span-1">
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sticky top-8 border-4 border-yellow-400/30 shadow-glow-gold">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sticky top-8 border-4 border-yellow-400/50">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <svg className="w-10 h-10 text-yellow-500 animate-spin-slow" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -318,16 +259,29 @@ export default function LotteryPage() {
       </div>
 
       <style jsx>{`
-        /* ❄️ SNOWFLAKES */
+        /* ⭐ TWINKLING STARS - Гялтгах одууд */
+        @keyframes star-twinkle {
+          0%, 100% {
+            opacity: 0.3;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.2);
+          }
+        }
+        
+        .star-twinkle {
+          animation: star-twinkle ease-in-out infinite;
+        }
+
+        /* ❄️ SNOWFALL ANIMATION */
         @keyframes snowfall {
           0% {
-            transform: translateY(-10px) translateX(0) rotate(0deg);
+            transform: translateY(-20px) translateX(0) rotate(0deg);
             opacity: 0;
           }
           10% {
-            opacity: 1;
-          }
-          90% {
             opacity: 1;
           }
           100% {
@@ -336,99 +290,38 @@ export default function LotteryPage() {
           }
         }
         
-        .snowflake {
+        .animate-snowfall {
           animation: snowfall linear infinite;
           text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
-        /* 🎄 FLOATING TREES */
-        @keyframes float-tree {
-          0%, 100% {
-            transform: translateY(0) translateX(0) rotate(-10deg);
-          }
-          25% {
-            transform: translateY(-30px) translateX(20px) rotate(5deg);
-          }
-          50% {
-            transform: translateY(-60px) translateX(-20px) rotate(-5deg);
-          }
-          75% {
-            transform: translateY(-30px) translateX(20px) rotate(10deg);
-          }
+        /* 🌈 GRADIENT ANIMATED TITLE */
+        .christmas-gradient-title {
+          background: linear-gradient(
+            90deg,
+            #ef4444,
+            #f59e0b,
+            #eab308,
+            #22c55e,
+            #3b82f6,
+            #8b5cf6,
+            #ec4899,
+            #ef4444
+          );
+          background-size: 400% 100%;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-shift 5s linear infinite;
         }
         
-        .floating-tree {
-          animation: float-tree ease-in-out infinite;
-          filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.6));
-        }
-
-        /* ⭐ STARS */
-        @keyframes twinkle-star {
-          0%, 100% {
-            transform: scale(1) rotate(0deg);
-            opacity: 0.8;
+        @keyframes gradient-shift {
+          0% {
+            background-position: 0% 50%;
           }
-          50% {
-            transform: scale(1.3) rotate(180deg);
-            opacity: 1;
+          100% {
+            background-position: 400% 50%;
           }
-        }
-        
-        .floating-star {
-          animation: twinkle-star ease-in-out infinite;
-          filter: drop-shadow(0 0 15px rgba(234, 179, 8, 0.8));
-        }
-
-        /* 🎁 GIFTS */
-        @keyframes float-gift {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg) scale(1);
-          }
-          25% {
-            transform: translateY(-20px) rotate(5deg) scale(1.1);
-          }
-          50% {
-            transform: translateY(-40px) rotate(-5deg) scale(0.9);
-          }
-          75% {
-            transform: translateY(-20px) rotate(5deg) scale(1.1);
-          }
-        }
-        
-        .floating-gift {
-          animation: float-gift ease-in-out infinite;
-          filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.6));
-        }
-
-        /* ✨ GLOWING EFFECTS */
-        @keyframes glow-pulse {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.5;
-          }
-          50% {
-            transform: scale(1.2);
-            opacity: 0.8;
-          }
-        }
-        
-        .animate-glow-pulse {
-          animation: glow-pulse 4s ease-in-out infinite;
-        }
-        
-        .animate-glow-pulse-delay-1 {
-          animation: glow-pulse 4s ease-in-out infinite;
-          animation-delay: 1s;
-        }
-        
-        .animate-glow-pulse-delay-2 {
-          animation: glow-pulse 4s ease-in-out infinite;
-          animation-delay: 2s;
-        }
-        
-        .animate-glow-pulse-delay-3 {
-          animation: glow-pulse 4s ease-in-out infinite;
-          animation-delay: 3s;
         }
 
         /* 🎊 CELEBRATION */
@@ -447,10 +340,10 @@ export default function LotteryPage() {
         /* 🎨 BADGE ANIMATIONS */
         @keyframes badge-float {
           0%, 100% {
-            transform: translateY(0) rotate(-2deg);
+            transform: translateY(0);
           }
           50% {
-            transform: translateY(-10px) rotate(2deg);
+            transform: translateY(-10px);
           }
         }
         
@@ -463,20 +356,6 @@ export default function LotteryPage() {
           animation-delay: 1.5s;
         }
 
-        /* 🎯 TITLE ANIMATIONS */
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-
         @keyframes spin-slow {
           from {
             transform: rotate(0deg);
@@ -487,56 +366,7 @@ export default function LotteryPage() {
         }
         
         .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
-        
-        .animate-spin-slow-reverse {
-          animation: spin-slow 8s linear infinite reverse;
-        }
-
-        /* ✨ GLOWING SHADOWS */
-        .shadow-glow-red {
-          box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
-        }
-        
-        .shadow-glow-green {
-          box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
-        }
-        
-        .shadow-glow-gold {
-          box-shadow: 0 0 40px rgba(234, 179, 8, 0.5);
-        }
-        
-        .shadow-glow-multi {
-          box-shadow: 0 0 50px rgba(147, 51, 234, 0.3),
-                      0 0 100px rgba(239, 68, 68, 0.2),
-                      0 0 150px rgba(34, 197, 94, 0.2);
-        }
-
-        /* 🎄 CHRISTMAS TITLE */
-        .christmas-title {
-          background: linear-gradient(
-            45deg,
-            #ef4444,
-            #22c55e,
-            #3b82f6,
-            #eab308,
-            #ef4444
-          );
-          background-size: 400% 400%;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: gradient-shift 5s ease infinite;
-        }
-        
-        @keyframes gradient-shift {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
+          animation: spin-slow 10s linear infinite;
         }
 
         /* 📜 SCROLLBAR */
@@ -550,12 +380,12 @@ export default function LotteryPage() {
         }
 
         ::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom, #ef4444, #22c55e, #3b82f6);
+          background: linear-gradient(to bottom, #3b82f6, #0ea5e9);
           border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(to bottom, #dc2626, #16a34a, #2563eb);
+          background: linear-gradient(to bottom, #2563eb, #0284c7);
         }
       `}</style>
     </div>
