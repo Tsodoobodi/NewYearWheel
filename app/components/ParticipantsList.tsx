@@ -10,7 +10,7 @@ export default function ParticipantsList({
 }: ParticipantsListProps) {
   if (participants.length === 0) {
     return (
-      <div className="text-center py-8">
+      <div className="text-center py-4">
         <svg
           className="mx-auto h-16 w-16 text-gray-300 mb-3"
           fill="none"
