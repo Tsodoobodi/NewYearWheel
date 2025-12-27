@@ -90,7 +90,7 @@ export default function WinnerModal({ winner, onClose }: WinnerModalProps) {
             БАЯР ХҮРГЭЕ! 🎊
           </h2>
           <p className="text-2xl text-white/90 font-bold mb-8 animate-fade-in-up delay-100">
-            Та азтай хүн боллоо!
+            Та азтан боллоо!
           </p>
 
           {/* Winner Info */}

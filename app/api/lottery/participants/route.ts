@@ -22,7 +22,15 @@ export async function GET() {
 
     client.release();
 
-    return NextResponse.json(result.rows);
+    // ✅ Map snake_case to camelCase
+    const participants = result.rows.map(row => ({
+      id: row.id,
+      ftCode: row.ft_code,           // ✅ ft_code -> ftCode
+      fullName: row.full_name,       // ✅ full_name -> fullName
+      mobilePhone: row.mobile_phone  // ✅ mobile_phone -> mobilePhone
+    }));
+
+    return NextResponse.json(participants);
 
   } catch (error) {
     console.error('Get participants error:', error);

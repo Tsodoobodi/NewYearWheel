@@ -47,29 +47,30 @@ export default function LotteryPage() {
   };
 
   const segments = participants.map((p) => ({
-    text: p.full_name,
-    color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-  }));
+  text: p.fullName,      // ✅ p.full_name -> p.fullName
+  color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+  ftCode: p.ftCode       // ✅ p.ft_code -> p.ftCode
+}));
 
   const handleSpinEnd = async (winnerIndex: number) => {
     const winner = participants[winnerIndex];
 
     setCurrentWinner({
-      ft_code: winner.ft_code,
-      full_name: winner.full_name,
-      mobile_phone: winner.mobile_phone,
-    });
+    ft_code: winner.ftCode,       // ✅ winner.ft_code -> winner.ftCode
+    full_name: winner.fullName,   // ✅ winner.full_name -> winner.fullName
+    mobile_phone: winner.mobilePhone, // ✅ winner.mobile_phone -> winner.mobilePhone
+  });
 
     setShowCelebration(true);
     setTimeout(() => setShowCelebration(false), 4000);
 
     try {
       const saveData = {
-        participantId: winner.id,
-        ftCode: winner.ft_code,
-        fullName: winner.full_name,
-        prizeName: "Шагнал",
-      };
+    participantId: winner.id,
+    ftCode: winner.ftCode,        // ✅ winner.ft_code -> winner.ftCode
+    fullName: winner.fullName,    // ✅ winner.full_name -> winner.fullName
+    prizeName: "Шагнал",
+  };
 
       const result = await api.saveWinner(saveData);
       const winnersData = await api.getWinners();

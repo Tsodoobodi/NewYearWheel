@@ -41,10 +41,10 @@ export default function ParticipantsList({
               {index + 1}
             </span>
             <span className="font-semibold text-gray-700 group-hover:text-purple-600 transition-colors">
-              {p.full_name}
+              {p.fullName}  {/* ✅ full_name -> fullName */}
             </span>
           </div>
-          <span className="text-sm text-gray-500 font-mono">{p.ft_code}</span>
+          <span className="text-sm text-gray-500 font-mono">{p.ftCode}</span> {/* ✅ ft_code -> ftCode */}
         </div>
       ))}
     </div>

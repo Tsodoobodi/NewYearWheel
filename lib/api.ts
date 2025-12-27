@@ -1,24 +1,21 @@
 // lib/api.ts
-// ❌ Энийг УСТГА
-// const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_URL = '/api';
 
-// ✅ Энийг АШИГЛА
-const API_URL = '/api'; // Relative URL - Same server!
-
+// ✅ camelCase interfaces - API response-той тохирно
 export interface Participant {
   id: number;
-  ft_code: string;
-  full_name: string;
-  mobile_phone?: string;
+  ftCode: string;        // ✅ ft_code -> ftCode
+  fullName: string;      // ✅ full_name -> fullName
+  mobilePhone?: string;  // ✅ mobile_phone -> mobilePhone
 }
 
 export interface Winner {
   id: number;
-  ft_code: string;
-  full_name: string;
-  prize_name: string;
-  won_at: string;
-  mobile_phone?: string;
+  ftCode: string;        // ✅ ft_code -> ftCode
+  fullName: string;      // ✅ full_name -> fullName
+  prizeName: string;     // ✅ prize_name -> prizeName
+  wonAt: string;         // ✅ won_at -> wonAt
+  mobilePhone?: string;  // ✅ mobile_phone -> mobilePhone
 }
 
 export interface SaveWinnerResponse {
